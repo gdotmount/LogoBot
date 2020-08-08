@@ -13,4 +13,4 @@ bot = commands.Bot(command_prefix='#')
 async def beep(ctx):
     await ctx.channel.send('boop')
 
-client.run('NjkyNDUzMzkxMDkxMzY4MDE3.XwwdKg.U_r_huoQ-FpZ-POZ9C9MGRZnqoA')
+client.run('TOKEN')
