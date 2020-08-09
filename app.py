@@ -8,6 +8,10 @@ bot = commands.Bot(command_prefix='.')
 script_dir = os.path.dirname(__file__)
 
 @bot.event
+async def on_ready():
+    print('Logobot is logged in and ready to lock and load.')
+
+@bot.event
 async def on_message(message):
     if bot.user == message.author:
         return
@@ -25,10 +29,9 @@ async def on_guild_join(guild):
         json.dump(data, f)
         f.truncate()
 
-
 @bot.command()
 async def confirm(ctx, tagline):
-    return
+    await ctx.send('boop')
     
 @bot.command()
 async def setdomain(ctx, domain):
