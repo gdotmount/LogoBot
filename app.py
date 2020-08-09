@@ -1,5 +1,6 @@
 import json
 import os
+from boto.s3.connection import S3Connection
 import discord
 from discord.ext import commands
 
@@ -39,4 +40,4 @@ async def setdomain(ctx, domain):
         json.dump(data, f)
         f.truncate()
     
-bot.run('NjkyNDUzMzkxMDkxMzY4MDE3.XnuveQ.AKA8Gqad3RAl_y4wVqzxtUMzZ1k')
+bot.run(S3Connection(os.environ['BOT_TOKEN']))
