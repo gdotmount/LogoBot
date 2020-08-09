@@ -43,4 +43,4 @@ async def setdomain(ctx, domain):
         json.dump(data, f)
         f.truncate()
 print(os.environ['BOT_TOKEN'])
-bot.run(S3Connection(os.environ['BOT_TOKEN']))
+bot.run(os.environ['BOT_TOKEN'])
