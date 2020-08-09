@@ -1,9 +1,15 @@
 import json
 import os
-from boto.s3.connection import S3Connection
+import psycopg2
 import discord
 from discord.ext import commands
 
+connection = psycopg2.connect(
+    user = os.environ['DATABASE_USER'], 
+    password = os.environ['DATABASE_PASS'], 
+    host = os.environ['DATABASE_HOST'], 
+    database = os.environ['DATABASE'], 
+    port = 5432)
 bot = commands.Bot(command_prefix='.')
 script_dir = os.path.dirname(__file__)
 
@@ -42,5 +48,5 @@ async def setdomain(ctx, domain):
         f.seek(0)
         json.dump(data, f)
         f.truncate()
-print(os.environ['BOT_TOKEN'])
+
 bot.run(os.environ['BOT_TOKEN'])
