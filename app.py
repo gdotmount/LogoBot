@@ -39,4 +39,4 @@ async def setdomain(ctx, domain):
         json.dump(data, f)
         f.truncate()
     
-bot.run('NjkyNDUzMzkxMDkxMzY4MDE3.XnuveQ.AKA8Gqad3RAl_y4wVqzxtUMzZ1k')
+bot.run('TOKEN')
