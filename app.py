@@ -10,6 +10,7 @@ connection = psycopg2.connect(
     host = os.environ['DATABASE_HOST'], 
     database = os.environ['DATABASE'], 
     port = 5432)
+cursor = connection.cursor()
 bot = commands.Bot(command_prefix='.')
 script_dir = os.path.dirname(__file__)
 
@@ -27,17 +28,24 @@ async def on_message(message):
 
 @bot.event
 async def on_guild_join(guild):
-    rel_dir = f'server-specific-data/{guild.id}.json'
-    json_str = '{"domain": "@gmail.com", "users": []}'
-    data = json.loads(json_str)
-    with open(os.path.join(script_dir, rel_dir), 'w') as f:
-        f.seek(0)
-        json.dump(data, f)
-        f.truncate()
+    return
 
 @bot.command()
-async def confirm(ctx, tagline):
+async def confirm(ctx):
+    json_str = "'{ " + f'"{ctx.guild.id}":' + ' { "domain": "@gmail.com", "users": [] } }' + "'"
+    print(json_str)
     await ctx.send('boop')
+    function = f"""INSERT INTO servers (info)
+        VALUES({json_str})"""
+    cursor.execute(function)
+    connection.commit()
+    
+@bot.command()
+async def con(ctx):
+    function = "SELECT info FROM servers;"
+    cursor.execute(function)
+    results = cursor.fetchall()
+    print(results)
     
 @bot.command()
 async def setdomain(ctx, domain):

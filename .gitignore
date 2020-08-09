@@ -10,4 +10,3 @@
 venv/
 # VS Code settings only important to local editing
 .vscode/
-local-environ-vars.py
