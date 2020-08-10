@@ -97,9 +97,5 @@ async def setdomain(ctx, domain):
     cursor.execute(sql)
     results = cursor.fetchall()
     print(f'New domain for server "{ctx.guild.name}": ' + str(results))
-   
-@bot.command()
-async def test(ctx):
-    return
 
 bot.run(os.environ['BOT_TOKEN'])
