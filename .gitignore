@@ -1,0 +1,12 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# No need to import virtual environment as heroku sets up its own
+venv/
+# VS Code settings only important to local editing
+.vscode/
