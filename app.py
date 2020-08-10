@@ -96,6 +96,6 @@ async def setdomain(ctx, domain):
     sql = 'SELECT domain FROM s%d where userid = 0' % ctx.guild.id
     cursor.execute(sql)
     results = cursor.fetchall()
-    print(f'New domain for server "{ctx.guild.name}": ' + str(results))
+    print(f'New domain for server "{ctx.guild.name}": ' + domain)
 
 bot.run(os.environ['BOT_TOKEN'])
