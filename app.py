@@ -2,6 +2,8 @@ import os
 import random
 import psycopg2
 import discord
+import smtplib
+import verificationemails
 from discord.ext import commands
 from discord.utils import get
 
@@ -51,10 +53,10 @@ async def initdb(ctx):
 
 @bot.command()
 async def confirm(ctx, tag):
-    sql = 'select domain from s%d where userid = 0' % ctx.guild.id
+    sql = 'select domain from s%d where userid = 0;' % ctx.guild.id
     cursor.execute(sql)
     domain = cursor.fetchall()[0][0]
-    sql = 'SELECT * FROM s%d' % (ctx.guild.id)
+    sql = 'SELECT * FROM s%d;' % (ctx.guild.id)
     cursor.execute(sql)
     results = cursor.fetchall()
     exists = False
@@ -64,19 +66,28 @@ async def confirm(ctx, tag):
                 try:
                     role = get(ctx.guild.roles, name="Verified")
                     await ctx.author.add_roles(role)
+                    sql = "update s%d set verified = TRUE where userid = %d;" % (ctx.guild.id, ctx.author.id)
                 except:
                     await ctx.send('Your code was correct, but Logobot encountered an error.')
                     message = '''A server admin must specify a verified role to be given upon verification since the default role that Logobot creates upon joining does not exist.'''
                     await ctx.send(message)
-            elif(not row[4]):
-                await ctx.send(f"Resending verification code to {tag}{domain}")
-                if(tag != row[2]):
-                    sql = "update s%d set tagline = '%s' where userid = %d" % (ctx.guild.id, tag, ctx.author.id)
-                    cursor.execute(sql)
-                    connection.commit()
             elif(row[4]):
                 await ctx.send('You are already verified dummy.')
                 await ctx.send('jesus i sound like dr berger')
+            else:
+                code = row[2]
+                receiver = f'{tag}{domain}'
+                await ctx.send(f"Resending verification code to {receiver}")
+                if(tag != row[3]):
+                    sql = "update s%d set tagline = '%s' where userid = %d;" % (ctx.guild.id, tag, ctx.author.id)
+                    cursor.execute(sql)
+                    connection.commit()
+                if(code is None):
+                    code = random.randint(100000, 999999)
+                    sql = "update s%d set code = %d where userid = %d;" % (ctx.guild.id, code, ctx.author.id)
+                    cursor.execute(sql)
+                    connection.commit()
+                await verificationemails.send_email(receiver, ctx, code)
             exists = True
             break
     if(exists == False):
@@ -85,7 +96,9 @@ async def confirm(ctx, tag):
         sql = "INSERT INTO s%d(userid, code, tagline, verified) VALUES(%d, %d, '%s', FALSE);" % (ctx.guild.id, ctx.author.id, code, tag)
         cursor.execute(sql)
         connection.commit()
-        await ctx.send(f'Sending verification code to {tag}{domain}')
+        receiver = f'{tag}{domain}'
+        await ctx.send(f'Sending verification code to {receiver}')
+        await verificationemails.send_email(receiver, ctx, code)
     
 @bot.command()
 async def setdomain(ctx, domain):
@@ -93,9 +106,14 @@ async def setdomain(ctx, domain):
     cursor.execute(sql)
     connection.commit()
 
-    sql = 'SELECT domain FROM s%d where userid = 0' % ctx.guild.id
+    sql = 'SELECT domain FROM s%d where userid = 0;' % ctx.guild.id
     cursor.execute(sql)
-    results = cursor.fetchall()
     print(f'New domain for server "{ctx.guild.name}": ' + domain)
+
+@bot.command()
+async def test(ctx):
+    sql = 'UPDATE s%d SET verified = False WHERE userid = %d;' % (ctx.guild.id, ctx.author.id)
+    cursor.execute(sql)
+    connection.commit()
 
 bot.run(os.environ['BOT_TOKEN'])
