@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="ddeebe6b-090f-4b45-b249-2e0789011311" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1ecbbEbEvKmWfX9znqlqIDrKF8l" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+  </component>
+  <component name="RunManager">
+    <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="logobot" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/app.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.app" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ddeebe6b-090f-4b45-b249-2e0789011311" name="Default Changelist" comment="" />
+      <created>1594623897332</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1594623897332</updated>
+      <workItem from="1594623914067" duration="334000" />
+      <workItem from="1594624259156" duration="5997000" />
+      <workItem from="1594630318792" duration="5000" />
+      <workItem from="1594668168929" duration="3000" />
+    </task>
+    <task id="LOCAL-00001" summary="preparing for heroku">
+      <created>1594626314495</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1594626314495</updated>
+    </task>
+    <task id="LOCAL-00002" summary="procfile">
+      <created>1594626501252</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1594626501252</updated>
+    </task>
+    <task id="LOCAL-00003" summary="procfile again">
+      <created>1594626737200</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1594626737200</updated>
+    </task>
+    <task id="LOCAL-00004" summary="gunicorn">
+      <created>1594627768609</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1594627768609</updated>
+    </task>
+    <task id="LOCAL-00005" summary="requirements file">
+      <created>1594628273513</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1594628273513</updated>
+    </task>
+    <task id="LOCAL-00006" summary="venv">
+      <created>1594628303761</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1594628303761</updated>
+    </task>
+    <task id="LOCAL-00007" summary="finally dude">
+      <created>1594628655105</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1594628655105</updated>
+    </task>
+    <task id="LOCAL-00008" summary="so heroku doesn't crash">
+      <created>1594629244596</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1594629244596</updated>
+    </task>
+    <task id="LOCAL-00009" summary="new token">
+      <created>1594629449977</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1594629449977</updated>
+    </task>
+    <task id="LOCAL-00010" summary="rid the web dyno">
+      <created>1594629777170</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1594629777170</updated>
+    </task>
+    <task id="LOCAL-00011" summary="reduce requirements">
+      <created>1594630012066</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1594630012066</updated>
+    </task>
+    <task id="LOCAL-00012" summary="reduce requirements">
+      <created>1594630083891</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1594630083891</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="preparing for heroku" />
+    <MESSAGE value="procfile" />
+    <MESSAGE value="procfile again" />
+    <MESSAGE value="gunicorn" />
+    <MESSAGE value="requirements file" />
+    <MESSAGE value="venv" />
+    <MESSAGE value="finally dude" />
+    <MESSAGE value="so heroku doesn't crash" />
+    <MESSAGE value="new token" />
+    <MESSAGE value="rid the web dyno" />
+    <MESSAGE value="reduce requirements" />
+    <option name="LAST_COMMIT_MESSAGE" value="reduce requirements" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1301" y="313" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1594625065580">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1301" y="313" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1594625065580" />
+    <state x="1990" y="513" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1594627733678">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1990" y="513" key="#com.intellij.fileTypes.FileTypeChooser/0.0.2560.1400@0.0.2560.1400" timestamp="1594627733678" />
+    <state x="1811" y="279" key="CommitChangelistDialog2" timestamp="1594630083601">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1811" y="279" key="CommitChangelistDialog2/0.0.2560.1400@0.0.2560.1400" timestamp="1594630083601" />
+    <state width="1340" height="260" key="GridCell.Tab.0.bottom" timestamp="1594630303057">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1340" height="260" key="GridCell.Tab.0.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1594630303057" />
+    <state width="1340" height="260" key="GridCell.Tab.0.center" timestamp="1594630303057">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1340" height="260" key="GridCell.Tab.0.center/0.0.2560.1400@0.0.2560.1400" timestamp="1594630303057" />
+    <state width="1340" height="260" key="GridCell.Tab.0.left" timestamp="1594630303057">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1340" height="260" key="GridCell.Tab.0.left/0.0.2560.1400@0.0.2560.1400" timestamp="1594630303057" />
+    <state width="1340" height="260" key="GridCell.Tab.0.right" timestamp="1594630303057">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1340" height="260" key="GridCell.Tab.0.right/0.0.2560.1400@0.0.2560.1400" timestamp="1594630303057" />
+    <state x="1348" y="303" key="SettingsEditor" timestamp="1594629048232">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1348" y="303" key="SettingsEditor/0.0.2560.1400@0.0.2560.1400" timestamp="1594629048232" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/logobot$app.coverage" NAME="app Coverage Results" MODIFIED="1594629389048" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>

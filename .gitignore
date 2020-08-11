@@ -10,4 +10,4 @@
 venv/
 # VS Code settings only important to local editing
 .vscode/
-.__pycache__/
+__pycache__/
