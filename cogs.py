@@ -8,6 +8,7 @@ class Listeners(commands.Cog):
         self.connection = connection
         self.cursor = cursor
 
+
     @commands.Cog.listener()
     async def on_ready(self):
         print('Logobot is logged in and ready to lock and load.')
@@ -49,6 +50,7 @@ class Listeners(commands.Cog):
         self.cursor.execute(sql)
         self.connection.commit()
 
+
     @commands.Cog.listener()
     async def on_message(self, message):
         sql = "select unverifiedchannel from s%d where userid = 0;" % message.guild.id
@@ -64,6 +66,7 @@ class Listeners(commands.Cog):
             if message.content == 'ping':
                 await message.channel.send('pong')
         await self.bot.process_commands(message)
+
 
     @commands.bot_has_guild_permissions(manage_channels=True)
     async def initchannel(self, guild):
@@ -83,6 +86,7 @@ class Listeners(commands.Cog):
         sql = "update s%d set unverifiedchannel = %d where userid = 0;" % (guild.id, channel.id)
         self.cursor.execute(sql)
     
+
     @commands.bot_has_guild_permissions(manage_roles=True)
     async def initroles(self, guild):
         guild.create_role()
@@ -104,6 +108,7 @@ class Listeners(commands.Cog):
         except PermissionError: guild.owner.send("It seems that I don't have permission to manage roles, which means you (or an admin) will either need to give me that permission and call the 'initializeroles' command or manually set the verified and (optionally) unverified roles with the 'setrole' command. You may also need to do the same for the verification channel.")
         finally: self.connection.commit()
     
+
     @commands.Cog.listener()
     async def on_guild_role_delete(self, role):
         sql = "select verifiedrole, unverifiedrole from s%d where userid = 0;" % role.guild.id
@@ -120,6 +125,7 @@ class Listeners(commands.Cog):
             self.cursor.execute(sql)
             self.connection.commit()
 
+
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, channel):
         sql = "select unverifiedchannel from s%d where userif = 0;" % channel.guild.id
@@ -130,11 +136,13 @@ class Listeners(commands.Cog):
             self.cursor.execute(sql)
             self.connection.commit()
 
+
 class AdminCommands(commands.Cog):
     def __init__(self, bot, connection, cursor):
         self.bot = bot
         self.connection = connection
         self.cursor = cursor
+
 
     @commands.bot_has_guild_permissions(manage_channels=True)
     @commands.command()
@@ -148,7 +156,7 @@ class AdminCommands(commands.Cog):
         if(not ctx.channel.permissions_for(ctx.author).administrator):
             ctx.send('You are not authorized to use this command as it is restricted to administrators.')
             return
-        if(verifiedrole is None):
+        elif(verifiedrole is None):
             ctx.send("A role for verification must be designated with either the 'initializeroles' command or the 'setrole' command. A role for unverified users is optional.")
             return
 
@@ -157,31 +165,103 @@ class AdminCommands(commands.Cog):
                 ctx.guild.me: discord.PermissionOverwrite(read_messages=True),
                 ctx.guild.get_role(verifiedrole): discord.PermissionOverwrite(read_messages=False)
             }
-            channel = ctx.guild.create_text_channel(name, overwrites=overwrites)
         else:
             overwrites = {
                 ctx.guild.me: discord.PermissionOverwrite(read_messages=True),
                 ctx.guild.get_role(verifiedrole): discord.PermissionOverwrite(read_messages=False),
                 ctx.guild.get_role(unverifiedrole): discord.PermissionOverwrite(read_messages=True)
                 }
-            channel = ctx.guild.create_text_channel(name, overwrites=overwrites)
+        channel = ctx.guild.create_text_channel(name, overwrites=overwrites)
         sql = "update s%d set unverifiedchannel = %d where userid = 0;" % (ctx.guild.id, channel.id)
         self.cursor.execute(sql)
         self.connection.commit()
+
 
     @initializechannel.error
     async def ichannel_error(self, ctx, error):
         if isinstance(error, PermissionError):
             await ctx.send('I do not have permission to do that. I need to be granted the "Manage Channels" permission. Or, you can manually create a channel for verification and user the "setchannel" command.')
 
+
+    @commands.bot_has_guild_permissions(manage_channels=True)
+    @commands.command()
+    async def setchannel(self, ctx, id=None, overwrite=None):
+        sql = "select verifiedrole, unverifiedrole from s%d where userid = 0;"
+        self.cursor.execute(sql)
+        results = self.cursor.fetchall()[0]
+        verifiedrole = results[0]
+        unverifiedrole = results[1]
+
+        if(not ctx.channel.permissions_for(ctx.author).administrator):
+            ctx.send('You are not authorized to use this command as it is restricted to administrators.')
+            return
+        elif(verifiedrole is None):
+            ctx.send("A role for verification must be designated with either the 'initializeroles' command or the 'setrole' command. A role for unverified users is optional.")
+            return
+        
+        if(id is not None):
+            # Error is channel belonging to id doesnt exist
+            channel = ctx.guild.get_channel(id)
+            if(channel is None):
+                ctx.send('The designated channel does not exist.')
+                return
+        else:
+            channel = ctx.channel
+
+        if(overwrite is not None):
+            if(unverifiedrole is None):
+                overwrites = {
+                ctx.guild.me: discord.PermissionOverwrite(read_messages=True),
+                ctx.guild.get_role(verifiedrole): discord.PermissionOverwrite(read_messages=False),
+                }
+            else:
+                overwrites = {
+                ctx.guild.me: discord.PermissionOverwrite(read_messages=True),
+                ctx.guild.get_role(verifiedrole): discord.PermissionOverwrite(read_messages=False),
+                ctx.guild.get_role(unverifiedrole): discord.PermissionOverwrite(read_messages=True)
+                }
+            await channel.edit(overwrites=overwrites)
+            
+        sql = "update s%d set unverifiedchannel = %d where userid = 0;" % (ctx.guild.id, channel.id)
+        self.cursor.execute(sql)
+        self.connection.commit()
+
+
+    @setchannel.error
+    async def schannel_error(self, ctx, error):
+        if isinstance(error, PermissionError):
+            await ctx.send('I do not have permission to do that. I need to be granted the "Manage Channels" permission.')
+    
+
+    @commands.bot_has_guild_permissions(manage_roles=True)
+    @commands.command()
+    async def initializeroles(self, ctx, verifiedname = "Verified", unverifiedname = "Unverified"):
+
+
+    @initializeroles.error
+    async def iroles_error(self, ctx, error):
+
+    @commands.bot_has_guild_permissions(manage_roles=True)
+    @commands.command()
+    async def setrole(self, ctx, verifiedroleid, unverifiedroleid = None):
+
+
+    @setrole.error
+    async def srole_error(self, ctx, error):
+        if isinstance(error, PermissionError):
+            ctx.send('I do not have permission to do that. I need to be granted the "Manage Roles" permission.')     
+
+
     @commands.command()
     async def setdomain(self, ctx, domain):
-        if(ctx.channel.permissions_for(ctx.author).administrator):
-            sql = "UPDATE s%d SET domain = '%s' where userid = 0;" % (ctx.guild.id, domain)
-            self.cursor.execute(sql)
-            self.connection.commit()
+        if(not ctx.channel.permissions_for(ctx.author).administrator):
+            ctx.send('You are not authorized to use this command as it is restricted to administrators.')
+            return
 
-            sql = 'SELECT domain FROM s%d where userid = 0;' % ctx.guild.id
-            self.cursor.execute(sql)
-            print(f'New domain for server "{ctx.guild.name}": ' + domain)
-        else: ctx.send('You are not authorized to use this command as it is restricted to administrators.')
+        sql = "UPDATE s%d SET domain = '%s' where userid = 0;" % (ctx.guild.id, domain)
+        self.cursor.execute(sql)
+        self.connection.commit()
+
+        sql = 'SELECT domain FROM s%d where userid = 0;' % ctx.guild.id
+        self.cursor.execute(sql)
+        print(f'New domain for server "{ctx.guild.name}": ' + domain)
