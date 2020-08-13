@@ -27,6 +27,7 @@ class Listeners(commands.Cog):
             unverifiedchannel = results[2]
             id = int(table[slice(1, len(table))])
             guild = self.bot.get_guild(id)
+            
             if(guild.get_member(692453391091368017) is None):
                 await self.on_guild_remove(guild)
             else:
@@ -106,7 +107,8 @@ class Listeners(commands.Cog):
             try: await self.initchannel(guild)
             except PermissionError: guild.owner.send("It seems that I don't have permission to create channels, which means you (or an admin) will either need to give me that permission and call the 'initializechannel' command or manually set a channel for verification and call the 'setchannel' command for it.")
         except PermissionError: guild.owner.send("It seems that I don't have permission to manage roles, which means you (or an admin) will either need to give me that permission and call the 'initializeroles' command or manually set the verified and (optionally) unverified roles with the 'setrole' command. You may also need to do the same for the verification channel.")
-        finally: self.connection.commit()
+        
+        self.connection.commit()
     
 
     @commands.Cog.listener()
@@ -180,76 +182,83 @@ class AdminCommands(commands.Cog):
     @initializechannel.error
     async def ichannel_error(self, ctx, error):
         if isinstance(error, PermissionError):
-            await ctx.send('I do not have permission to do that. I need to be granted the "Manage Channels" permission. Or, you can manually create a channel for verification and user the "setchannel" command.')
+            await ctx.send('I do not have permission to do that. I need to be granted the "Manage Channels" permission. Or, you can manually designate a channel for verification with the "setchannel" command.')
 
 
-    @commands.bot_has_guild_permissions(manage_channels=True)
     @commands.command()
-    async def setchannel(self, ctx, id=None, overwrite=None):
-        sql = "select verifiedrole, unverifiedrole from s%d where userid = 0;"
-        self.cursor.execute(sql)
-        results = self.cursor.fetchall()[0]
-        verifiedrole = results[0]
-        unverifiedrole = results[1]
-
+    async def setchannel(self, ctx, id=None):
         if(not ctx.channel.permissions_for(ctx.author).administrator):
             ctx.send('You are not authorized to use this command as it is restricted to administrators.')
             return
-        elif(verifiedrole is None):
-            ctx.send("A role for verification must be designated with either the 'initializeroles' command or the 'setrole' command. A role for unverified users is optional.")
-            return
         
         if(id is not None):
-            # Error is channel belonging to id doesnt exist
-            channel = ctx.guild.get_channel(id)
-            if(channel is None):
-                ctx.send('The designated channel does not exist.')
+            try: 
+                channel = ctx.guild.get_channel(int(id))
+                if(channel is None):
+                    ctx.send("The designated channel does not exist. If you are confused on how to get the id of a channel, you must enable Discord Developer Mode in your personal settings; then, when you right click on a channel, you'll have the option to copy its ID.")
+                    return
+            except TypeError:
+                ctx.send("The designated channel ID is not a number.")
                 return
         else:
             channel = ctx.channel
-
-        if(overwrite is not None):
-            if(unverifiedrole is None):
-                overwrites = {
-                ctx.guild.me: discord.PermissionOverwrite(read_messages=True),
-                ctx.guild.get_role(verifiedrole): discord.PermissionOverwrite(read_messages=False),
-                }
-            else:
-                overwrites = {
-                ctx.guild.me: discord.PermissionOverwrite(read_messages=True),
-                ctx.guild.get_role(verifiedrole): discord.PermissionOverwrite(read_messages=False),
-                ctx.guild.get_role(unverifiedrole): discord.PermissionOverwrite(read_messages=True)
-                }
-            await channel.edit(overwrites=overwrites)
             
         sql = "update s%d set unverifiedchannel = %d where userid = 0;" % (ctx.guild.id, channel.id)
         self.cursor.execute(sql)
         self.connection.commit()
-
-
-    @setchannel.error
-    async def schannel_error(self, ctx, error):
-        if isinstance(error, PermissionError):
-            await ctx.send('I do not have permission to do that. I need to be granted the "Manage Channels" permission.')
     
 
     @commands.bot_has_guild_permissions(manage_roles=True)
     @commands.command()
     async def initializeroles(self, ctx, verifiedname = "Verified", unverifiedname = "Unverified"):
+        if(not ctx.channel.permissions_for(ctx.author).administrator):
+            ctx.send('You are not authorized to use this command as it is restricted to administrators.')
+            return
+        
+        verifiedrole = await ctx.guild.create_role(verifiedname)
+        unverifiedrole = await ctx.guild.create_role(unverifiedname)
+
+        sql = "update s%d set verifiedrole = '%s', set unverifiedrole = '%s' where userid = 0;" % (ctx.guild.id, verifiedrole, unverifiedrole)
+        self.cursor.execute(sql)
+        self.connection.commit()
 
 
     @initializeroles.error
     async def iroles_error(self, ctx, error):
+        if isinstance(error, PermissionError):
+            ctx.send('I do not have permission to do that. I need to be granted the "Manage Channels" permission. Or, you can manually designate a verified and (optionally) unverified role by copying their IDs and using the "setrole" command.')
 
-    @commands.bot_has_guild_permissions(manage_roles=True)
+
     @commands.command()
     async def setrole(self, ctx, verifiedroleid, unverifiedroleid = None):
+        if(not ctx.channel.permissions_for(ctx.author).administrator):
+            ctx.send('You are not authorized to use this command as it is restricted to administrators.')
+            return
 
+        try:
+            role = ctx.guild.get_role(int(verifiedroleid))
+            if(role is None):
+                ctx.send("The designated verified role does not exist. If you are confused on how to get the id of a role, you must enable Discord Developer Mode in your personal settings; then, when you right click on a role, you'll have the option to copy its ID.")
+                return
+            else:
+                sql = "update s%d set verifiedrole = %d where userid = 0;" % (ctx.guild.id, role.id)
+                self.cursor.execute(sql)
+        except TypeError:
+            ctx.send("The designated verified role ID is not a number.")
+        
+        if(unverifiedroleid is not None):
+            try:
+                unverifiedrole = ctx.guild.get_role(int(unverifiedroleid))
+                if(unverifiedrole is None):
+                    ctx.send("The designated unverified role does not exist. If you are confused on how to get the id of a role, you must enable Discord Developer Mode in your personal settings; then, when you right click on a role, you'll have the option to copy its ID.")
+                else:
+                    sql = "update s%d set unverifiedrole %d where userid = 0;" % (ctx.guild.id, unverifiedrole.id)
+                    self.cursor.execute(sql)
+            except TypeError:
+                ctx.send("The designated unverified role ID is not a number.")
+        
+        self.connection.commit()
 
-    @setrole.error
-    async def srole_error(self, ctx, error):
-        if isinstance(error, PermissionError):
-            ctx.send('I do not have permission to do that. I need to be granted the "Manage Roles" permission.')     
 
 
     @commands.command()

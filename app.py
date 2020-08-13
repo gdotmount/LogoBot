@@ -2,7 +2,6 @@ import os
 import random
 import psycopg2
 import discord
-import smtplib
 import verificationemails
 from cogs import Listeners, AdminCommands
 from discord.ext import commands
