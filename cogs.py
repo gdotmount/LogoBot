@@ -27,7 +27,7 @@ class Listeners(commands.Cog):
             unverifiedchannel = results[2]
             id = int(table[slice(1, len(table))])
             guild = self.bot.get_guild(id)
-            
+
             if(guild.get_member(692453391091368017) is None):
                 await self.on_guild_remove(guild)
             else:
@@ -226,7 +226,7 @@ class AdminCommands(commands.Cog):
     @initializeroles.error
     async def iroles_error(self, ctx, error):
         if isinstance(error, PermissionError):
-            ctx.send('I do not have permission to do that. I need to be granted the "Manage Channels" permission. Or, you can manually designate a verified and (optionally) unverified role by copying their IDs and using the "setrole" command.')
+            ctx.send('I do not have permission to do that. I need to be granted the "Manage Roles" permission. Or, you can manually designate a verified and (optionally) unverified role by copying their IDs and using the "setrole" command.')
 
 
     @commands.command()
