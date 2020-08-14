@@ -252,7 +252,7 @@ class AdminCommands(commands.Cog):
                 if(unverifiedrole is None):
                     await ctx.send("The designated unverified role does not exist. If you are confused on how to get the id of a role, you must enable Discord Developer Mode in your personal settings; then, when you right click on a role, you'll have the option to copy its ID.")
                 else:
-                    sql = "update s%d set unverifiedrole %d where userid = 0;" % (ctx.guild.id, unverifiedrole.id)
+                    sql = "update s%d set unverifiedrole = %d where userid = 0;" % (ctx.guild.id, unverifiedrole.id)
                     self.cursor.execute(sql)
             except TypeError:
                 await ctx.send("The designated unverified role ID is not a number.")
