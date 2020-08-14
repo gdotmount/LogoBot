@@ -273,4 +273,6 @@ class AdminCommands(commands.Cog):
 
         sql = 'SELECT domain FROM s%d where userid = 0;' % ctx.guild.id
         self.cursor.execute(sql)
-        print(f'New domain for server "{ctx.guild.name}": ' + domain)
+        message = f'New domain for server "{ctx.guild.name}": ' + domain
+        print(message)
+        ctx.send(message)

@@ -60,6 +60,10 @@ async def confirm(ctx, tag):
                 else:
                     await ctx.author.add_roles(role)
                     await ctx.send('I verified you again.')
+                if(unverifiedrole is not None):
+                    role = ctx.guild.get_role(unverifiedrole)
+                    if role in ctx.author.roles:
+                        await ctx.author.remove_roles(role)
             else:
                 code = row[1]
                 receiver = f'{tag}{domain}'
