@@ -57,16 +57,15 @@ class Listeners(commands.Cog):
         sql = "select unverifiedchannel from s%d where userid = 0;" % message.guild.id
         self.cursor.execute(sql)
         unverifiedchannel = self.cursor.fetchall()[0][0]
-        if(message.channel == unverifiedchannel):
+        if(message.channel.id == unverifiedchannel):
             if(self.bot.user == message.author):
-                await message.delete(5)
+                await message.delete(delay=5)
             else: await message.delete()
         else:
             if self.bot.user == message.author:
                 return
             if message.content == 'ping':
                 await message.channel.send('pong')
-        await self.bot.process_commands(message)
 
 
     @commands.bot_has_guild_permissions(manage_channels=True)
@@ -156,10 +155,10 @@ class AdminCommands(commands.Cog):
         unverifiedrole = results[1]
 
         if(not ctx.channel.permissions_for(ctx.author).administrator):
-            ctx.send('You are not authorized to use this command as it is restricted to administrators.')
+            await ctx.send('You are not authorized to use this command as it is restricted to administrators.')
             return
         elif(verifiedrole is None):
-            ctx.send("A role for verification must be designated with either the 'initializeroles' command or the 'setrole' command. A role for unverified users is optional.")
+            await ctx.send("A role for verification must be designated with either the 'initializeroles' command or the 'setrole' command. A role for unverified users is optional.")
             return
 
         if(unverifiedrole is None):
@@ -173,7 +172,7 @@ class AdminCommands(commands.Cog):
                 ctx.guild.get_role(verifiedrole): discord.PermissionOverwrite(read_messages=False),
                 ctx.guild.get_role(unverifiedrole): discord.PermissionOverwrite(read_messages=True)
                 }
-        channel = ctx.guild.create_text_channel(name, overwrites=overwrites)
+        channel = await ctx.guild.create_text_channel(name, overwrites=overwrites)
         sql = "update s%d set unverifiedchannel = %d where userid = 0;" % (ctx.guild.id, channel.id)
         self.cursor.execute(sql)
         self.connection.commit()
@@ -188,17 +187,17 @@ class AdminCommands(commands.Cog):
     @commands.command()
     async def setchannel(self, ctx, id=None):
         if(not ctx.channel.permissions_for(ctx.author).administrator):
-            ctx.send('You are not authorized to use this command as it is restricted to administrators.')
+            await ctx.send('You are not authorized to use this command as it is restricted to administrators.')
             return
         
         if(id is not None):
             try: 
                 channel = ctx.guild.get_channel(int(id))
                 if(channel is None):
-                    ctx.send("The designated channel does not exist. If you are confused on how to get the id of a channel, you must enable Discord Developer Mode in your personal settings; then, when you right click on a channel, you'll have the option to copy its ID.")
+                    await ctx.send("The designated channel does not exist. If you are confused on how to get the id of a channel, you must enable Discord Developer Mode in your personal settings; then, when you right click on a channel, you'll have the option to copy its ID.")
                     return
             except TypeError:
-                ctx.send("The designated channel ID is not a number.")
+                await ctx.send("The designated channel ID is not a number.")
                 return
         else:
             channel = ctx.channel
@@ -206,13 +205,14 @@ class AdminCommands(commands.Cog):
         sql = "update s%d set unverifiedchannel = %d where userid = 0;" % (ctx.guild.id, channel.id)
         self.cursor.execute(sql)
         self.connection.commit()
+        await ctx.send('Success.')
     
 
     @commands.bot_has_guild_permissions(manage_roles=True)
     @commands.command()
     async def initializeroles(self, ctx, verifiedname = "Verified", unverifiedname = "Unverified"):
         if(not ctx.channel.permissions_for(ctx.author).administrator):
-            ctx.send('You are not authorized to use this command as it is restricted to administrators.')
+            await ctx.send('You are not authorized to use this command as it is restricted to administrators.')
             return
         
         verifiedrole = await ctx.guild.create_role(verifiedname)
@@ -226,36 +226,36 @@ class AdminCommands(commands.Cog):
     @initializeroles.error
     async def iroles_error(self, ctx, error):
         if isinstance(error, PermissionError):
-            ctx.send('I do not have permission to do that. I need to be granted the "Manage Roles" permission. Or, you can manually designate a verified and (optionally) unverified role by copying their IDs and using the "setrole" command.')
+            await ctx.send('I do not have permission to do that. I need to be granted the "Manage Roles" permission. Or, you can manually designate a verified and (optionally) unverified role by copying their IDs and using the "setrole" command.')
 
 
     @commands.command()
     async def setrole(self, ctx, verifiedroleid, unverifiedroleid = None):
         if(not ctx.channel.permissions_for(ctx.author).administrator):
-            ctx.send('You are not authorized to use this command as it is restricted to administrators.')
+            await ctx.send('You are not authorized to use this command as it is restricted to administrators.')
             return
 
         try:
             role = ctx.guild.get_role(int(verifiedroleid))
             if(role is None):
-                ctx.send("The designated verified role does not exist. If you are confused on how to get the id of a role, you must enable Discord Developer Mode in your personal settings; then, when you right click on a role, you'll have the option to copy its ID.")
+                await ctx.send("The designated verified role does not exist. If you are confused on how to get the id of a role, you must enable Discord Developer Mode in your personal settings; then, when you right click on a role, you'll have the option to copy its ID.")
                 return
             else:
                 sql = "update s%d set verifiedrole = %d where userid = 0;" % (ctx.guild.id, role.id)
                 self.cursor.execute(sql)
         except TypeError:
-            ctx.send("The designated verified role ID is not a number.")
+            await ctx.send("The designated verified role ID is not a number.")
         
         if(unverifiedroleid is not None):
             try:
                 unverifiedrole = ctx.guild.get_role(int(unverifiedroleid))
                 if(unverifiedrole is None):
-                    ctx.send("The designated unverified role does not exist. If you are confused on how to get the id of a role, you must enable Discord Developer Mode in your personal settings; then, when you right click on a role, you'll have the option to copy its ID.")
+                    await ctx.send("The designated unverified role does not exist. If you are confused on how to get the id of a role, you must enable Discord Developer Mode in your personal settings; then, when you right click on a role, you'll have the option to copy its ID.")
                 else:
                     sql = "update s%d set unverifiedrole %d where userid = 0;" % (ctx.guild.id, unverifiedrole.id)
                     self.cursor.execute(sql)
             except TypeError:
-                ctx.send("The designated unverified role ID is not a number.")
+                await ctx.send("The designated unverified role ID is not a number.")
         
         self.connection.commit()
 
@@ -264,7 +264,7 @@ class AdminCommands(commands.Cog):
     @commands.command()
     async def setdomain(self, ctx, domain):
         if(not ctx.channel.permissions_for(ctx.author).administrator):
-            ctx.send('You are not authorized to use this command as it is restricted to administrators.')
+            await ctx.send('You are not authorized to use this command as it is restricted to administrators.')
             return
 
         sql = "UPDATE s%d SET domain = '%s' where userid = 0;" % (ctx.guild.id, domain)

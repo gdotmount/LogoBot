@@ -27,13 +27,13 @@ async def confirm(ctx, tag):
     unverifiedchannel = results[3]
 
     if(verifiedrole is None):
-        ctx.send('An administrator must specify a verified role to be given upon verification with either the "setverifiedrole" command or the "initializeroles" command.')
+        await ctx.send('An administrator must specify a verified role to be given upon verification with either the "setverifiedrole" command or the "initializeroles" command.')
         return
     elif(unverifiedchannel is None):
-        ctx.send('An administrator must specify a dedicated channel for unverified users to use this command with either the "setchannel" command or the "initializechannel" command.')
+        await ctx.send('An administrator must specify a dedicated channel for unverified users to use this command with either the "setchannel" command or the "initializechannel" command.')
         return
     elif(ctx.channel.id != unverifiedchannel):
-        ctx.send('This command is meant for unverified users in the channel: %s' % ctx.guild.get_channel(unverifiedchannel).name)
+        await ctx.send('This command is meant for unverified users in the channel: %s' % ctx.guild.get_channel(unverifiedchannel).name)
         return
 
     sql = 'SELECT userid, code, tagline, verified FROM s%d;' % ctx.guild.id
@@ -47,14 +47,19 @@ async def confirm(ctx, tag):
                 await ctx.author.add_roles(role)
                 if(unverifiedrole is not None):
                     role = ctx.guild.get_role(unverifiedrole)
-                    if(ctx.author.has_role(unverifiedrole)):
-                        await ctx.author.remove_role(role)
+                    if role in ctx.author.roles:
+                        await ctx.author.remove_roles(role)
                 sql = "update s%d set verified = TRUE where userid = %d;" % (ctx.guild.id, ctx.author.id)
                 cursor.execute(sql)
                 connection.commit()
             elif(row[3]):
-                await ctx.send('You are already verified dummy.')
-                await ctx.send('jesus i sound like dr berger')
+                role = ctx.guild.get_role(verifiedrole)
+                if(role in ctx.author.roles):
+                    await ctx.send('You are already verified dummy.')
+                    await ctx.send('jesus i sound like dr berger')
+                else:
+                    await ctx.author.add_roles(role)
+                    await ctx.send('I verified you again.')
             else:
                 code = row[1]
                 receiver = f'{tag}{domain}'
