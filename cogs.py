@@ -24,7 +24,7 @@ class Listeners(commands.Cog):
             results2 = self.cursor.fetchall()[0]
             verifiedrole = results2[0]
             unverifiedrole = results2[1]
-            unverifiedchannel = results[2]
+            unverifiedchannel = results2[2]
             id = int(table[slice(1, len(table))])
             guild = self.bot.get_guild(id)
 
