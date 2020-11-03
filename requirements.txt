@@ -4,3 +4,4 @@ cffi==1.14.0
 pycparser==2.20
 six==1.15.0
 psycopg2==2.8.5
+discord~=1.0.1
